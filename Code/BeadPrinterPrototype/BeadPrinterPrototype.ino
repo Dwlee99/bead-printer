@@ -18,28 +18,43 @@ const int max_servo = 2400;
 
 const int STEPS_PER_TURN = 200;
 const int delay_between_step_microsec = 5000;
-const int y_motor_dir_pin = A0;
-const int y_motor_step_pin = A1;
+
+const int y_motor_dir_pins[] = {A0};
+const int y_motor_step_pins[] = {A1};
+
+const int up_steps = -10;
+
+const int x_motor_dir_pins[] = {A2, A4};
+const int x_motor_step_pins[] = {A3, A5};
+
+const int right_steps = 10;
 
 int progress = 0;
 
-void step(bool forward, int direction_pin, int step_pin)
+void step(bool forward, const int direction_pins[], const int step_pins[])
 {
+  int num_pins = sizeof(direction_pins) / sizeof(direction_pins[0]);
   // setting the direction
   if (forward == true)
   {
-    digitalWrite(direction_pin, HIGH);
+    for(int i = 0; i < num_pins; i++) {
+      digitalWrite(direction_pins[i], HIGH);
+    }
   }
   else
   {
-    digitalWrite(direction_pin, LOW);
+    for(int i = 0; i < num_pins; i++) {
+      digitalWrite(direction_pins[i], LOW);
+    }
   }
-  // creating a step
-  digitalWrite(step_pin, HIGH);
-  // minimum delay is 1.9us
-  digitalWrite(step_pin, LOW);
+  for(int i = 0; i < num_pins; i++) {
+      digitalWrite(step_pins[i], HIGH);
+  }
+  for(int i = 0; i < num_pins; i++) {
+      digitalWrite(step_pins[i], LOW);
+  }
 }
-void steps(int number_of_steps, int direction_pin, int step_pin)
+void steps(int number_of_steps, const int direction_pins[], const int step_pins[])
 {
   bool move_forward = true;
   // Establishing the direction
@@ -55,31 +70,36 @@ void steps(int number_of_steps, int direction_pin, int step_pin)
   // Generating the steps
   for (int i = 0; i < number_of_steps; i++)
   {
-    step(move_forward, direction_pin, step_pin);
+    step(move_forward, direction_pins, step_pins);
     // Delay for proper speed
     delayMicroseconds(delay_between_step_microsec);
   }
 }
 
+
+
 void moveUp() {
   // move y-axis stepper motor
   cur_y--;
-  step(true, y_motor_dir_pin, y_motor_step_pin);
+  steps(up_steps, y_motor_dir_pins, y_motor_step_pins);
 }
 
 void moveDown() {
   // move y-axis stepper motor
   cur_y++;
-}
-
-void moveLeft() {
-  // move x-axis stepper motor
-  cur_x--;
+  steps(-up_steps, y_motor_dir_pins, y_motor_step_pins);
 }
 
 void moveRight() {
   // move x-axis stepper motor
   cur_x++;
+  steps(right_steps, x_motor_dir_pins, x_motor_step_pins);
+}
+
+void moveLeft() {
+  // move x-axis stepper motor
+  cur_x--;
+  steps(-right_steps, x_motor_dir_pins, x_motor_step_pins);
 }
 
 void moveY(int amount) {
@@ -156,8 +176,12 @@ void setup() {
   for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
     servos[i].attach(servo_pins[i], min_servo, max_servo);
   }
-  pinMode(y_motor_dir_pin, OUTPUT);
-  pinMode(y_motor_step_pin, OUTPUT);
+
+  for(int i = 0; i < sizeof(y_motor_dir_pins) / sizeof(y_motor_dir_pins[0]); i++) {
+    pinMode(y_motor_dir_pins[i], OUTPUT);
+    pinMode(y_motor_step_pins[i], OUTPUT);
+  }
+  
   Serial.begin(9600);
 }
 
