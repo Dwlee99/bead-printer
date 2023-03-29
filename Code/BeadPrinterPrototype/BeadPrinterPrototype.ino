@@ -11,21 +11,25 @@ int cur_y = 0;
 const int x_positions[] = {0, 5};
 const int y_positions[] = {0, 0};
 
-const int servo_pins[] = {13, A3};
-Servo servos[sizeof(servo_pins) / sizeof(servo_pins[0])];
-const int min_servo = 500;
-const int max_servo = 2400;
+// const int servo_pins[] = {13};
+// Servo servos[sizeof(servo_pins) / sizeof(servo_pins[0])];
+// const int min_servo = 500;
+// const int max_servo = 2400;
 
 const int STEPS_PER_TURN = 200;
 const int delay_between_step_microsec = 5000;
 
+const int dropper_motor_dir_pin = 33;
+const int dropper_motor_step_pin = 15;
+
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
 
-const int up_steps = -10;
+const int up_steps = -50;
 
-const int x_motor_dir_pin = A2;
-const int x_motor_step_pin = A3;
+const int x_motor_dir_pin = 12;
+const int x_motor_step_pin = 27;
+
 
 const int right_steps = 10;
 
@@ -131,13 +135,15 @@ void moveBoard(int r, int c, Color color) {
 }
 
 void dropBead(Color toDrop) {
-  Servo dropper = servos[toDrop];
-  dropper.write(180);
-  Serial.println(dropper.read());
-  delay(2000);
-  dropper.write(0);
-  Serial.println(dropper.read());
-  delay(2000);
+  // Servo dropper = servos[toDrop];
+  // dropper.write(180);
+  // delay(2000);
+  // dropper.write(0);
+  // delay(2000);
+  for(int i = 0; i < STEPS_PER_TURN; i++) {
+    step(true, dropper_motor_dir_pin, dropper_motor_step_pin);
+    delay(40);
+  }
 }
 
 void updateProgressBar() {
@@ -166,9 +172,12 @@ void drawImage(Color image[][n_cols]) {
 }
 
 void setup() {
-  for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
-    servos[i].attach(servo_pins[i], min_servo, max_servo);
-  }
+  // for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
+  //   servos[i].attach(servo_pins[i], min_servo, max_servo);
+  // }
+
+  pinMode(dropper_motor_dir_pin, OUTPUT);
+  pinMode(dropper_motor_step_pin, OUTPUT);
 
   pinMode(y_motor_dir_pin, OUTPUT);
   pinMode(y_motor_step_pin, OUTPUT);
@@ -181,6 +190,22 @@ void setup() {
 
 void loop() {
   // dropBead(COLOR0);
-  moveUp();
+  // moveRight();
   delay(1000);
+  // moveRight();
+  // delay(1000);
+  // moveRight();
+  // delay(1000);
+  // dropBead(COLOR0);
+  // delay(1000);
+  // delay(250);
+  // moveDown();
+  // delay(250);
+  // moveRight();
+  // delay(250);
+  // delay(250);
+  // moveLeft();
+  // delay(250);
+  // digitalWrite(x_motor_step_pin, HIGH);
+  // digitalWrite(x_motor_step_pin, LOW);
 }
