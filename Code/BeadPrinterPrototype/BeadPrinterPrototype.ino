@@ -81,10 +81,22 @@ void moveUp() {
   steps(up_steps, y_motor_dir_pin, y_motor_step_pin);
 }
 
+void moveUp(int amt) {
+  // move y-axis stepper motor
+  cur_y--;
+  steps(amt, y_motor_dir_pin, y_motor_step_pin);
+}
+
 void moveDown() {
   // move y-axis stepper motor
   cur_y++;
   steps(-up_steps, y_motor_dir_pin, y_motor_step_pin);
+}
+
+void moveDown(int amt) {
+  // move y-axis stepper motor
+  cur_y++;
+  steps(-amt, y_motor_dir_pin, y_motor_step_pin);
 }
 
 void moveRight() {
@@ -93,10 +105,23 @@ void moveRight() {
   steps(right_steps, x_motor_dir_pin, x_motor_step_pin);
 }
 
+
+void moveRight(int amt) {
+  // move x-axis stepper motor
+  cur_x++;
+  steps(amt, x_motor_dir_pin, x_motor_step_pin);
+}
+
 void moveLeft() {
   // move x-axis stepper motor
   cur_x--;
   steps(-right_steps, x_motor_dir_pin, x_motor_step_pin);
+}
+
+void moveLeft(int amt) {
+  // move x-axis stepper motor
+  cur_x--;
+  steps(-amt, x_motor_dir_pin, x_motor_step_pin);
 }
 
 void moveY(int amount) {
@@ -142,7 +167,7 @@ void dropBead(Color toDrop) {
   // delay(2000);
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pin, dropper_motor_step_pin);
-    delay(40);
+    delay(50);
   }
 }
 
@@ -188,24 +213,30 @@ void setup() {
   Serial.begin(9600);
 }
 
+int counter = 0;
+
 void loop() {
-  // dropBead(COLOR0);
-  // moveRight();
-  delay(1000);
-  // moveRight();
-  // delay(1000);
-  // moveRight();
-  // delay(1000);
-  // dropBead(COLOR0);
-  // delay(1000);
-  // delay(250);
-  // moveDown();
-  // delay(250);
-  // moveRight();
-  // delay(250);
-  // delay(250);
-  // moveLeft();
-  // delay(250);
-  // digitalWrite(x_motor_step_pin, HIGH);
-  // digitalWrite(x_motor_step_pin, LOW);
+ if(Serial.available()>0){
+    String input = Serial.readStringUntil('\n');
+    char firstChar = input.charAt(0);
+    String restOfChar = input.substring(1);
+    int givenSteps = restOfChar.toInt();
+    
+    switch(firstChar) {
+      case 'u':
+        moveUp(givenSteps);
+        break; 
+      case 'd':
+        moveDown(givenSteps);
+        break;  
+      case 'l':
+        moveLeft(givenSteps);
+        break;  
+      case 'r':
+        moveRight(givenSteps);
+        break;   
+    }
+    
+    Serial.println(input);
+ }
 }
