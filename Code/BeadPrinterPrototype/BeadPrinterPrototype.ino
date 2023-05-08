@@ -3,7 +3,7 @@
 const int n_rows = 16;
 const int n_cols = 16;
 
-typedef enum Color {COLOR0, COLOR1} Color;
+typedef enum Color {COLOR0, COLOR1, NONE} Color;
 
 int cur_x = 0;
 int cur_y = 0;
@@ -19,8 +19,8 @@ const int y_positions[] = {0, 0};
 const int STEPS_PER_TURN = 200;
 const int delay_between_step_microsec = 5000;
 
-const int dropper_motor_dir_pin = 33;
-const int dropper_motor_step_pin = 15;
+const int dropper_motor_dir_pins[] = {33};
+const int dropper_motor_step_pins[] = {15};
 
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
@@ -160,13 +160,8 @@ void moveBoard(int r, int c, Color color) {
 }
 
 void dropBead(Color toDrop) {
-  // Servo dropper = servos[toDrop];
-  // dropper.write(180);
-  // delay(2000);
-  // dropper.write(0);
-  // delay(2000);
   for(int i = 0; i < STEPS_PER_TURN; i++) {
-    step(true, dropper_motor_dir_pin, dropper_motor_step_pin);
+    step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
     delay(50);
   }
 }
@@ -189,9 +184,11 @@ void drawImage(Color image[][n_cols]) {
   for(int r = 0; r < n_rows; r++) {
     for(int c = 0; c < n_cols; c++) {
       Color toDrop = image[r][c];
-      moveBoard(r, c, toDrop);
-      dropBead(toDrop);
-      updateProgress(r, c, toDrop);
+      if (toDrop != NONE) {
+        moveBoard(r, c, toDrop);
+        dropBead(toDrop);
+        updateProgress(r, c, toDrop);
+      } 
     }
   }
 }
@@ -200,10 +197,11 @@ void setup() {
   // for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
   //   servos[i].attach(servo_pins[i], min_servo, max_servo);
   // }
-
-  pinMode(dropper_motor_dir_pin, OUTPUT);
-  pinMode(dropper_motor_step_pin, OUTPUT);
-
+  for(int i = 0; i < sizeof(dropper_motor_dir_pins) / sizeof(dropper_motor_dir_pins[0]); i++) {
+    pinMode(dropper_motor_dir_pins[i], OUTPUT);
+    pinMode(dropper_motor_step_pins[i], OUTPUT);
+  }
+  
   pinMode(y_motor_dir_pin, OUTPUT);
   pinMode(y_motor_step_pin, OUTPUT);
 
