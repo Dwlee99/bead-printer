@@ -192,6 +192,23 @@ void drawImage(Color image[][n_cols]) {
     }
   }
 }
+Color color0 = COLOR0;
+Color XImage[]={{COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,COLOR0,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,COLOR0,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}} 
 
 void setup() {
   // for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
@@ -214,31 +231,32 @@ void setup() {
 int counter = 0;
 
 void loop() {
-  moveUp(-1000);
- if(Serial.available()>0){
-    String input = Serial.readStringUntil('\n');
-    char firstChar = input.charAt(0);
-    String restOfChar = input.substring(1);
-    int givenSteps = restOfChar.toInt();
-    
-    switch(firstChar) {
-      case 'u':
-        moveUp(givenSteps);
-        break; 
-      case 'd':
-        moveDown(givenSteps);
-        break;  
-      case 'l':
-        moveLeft(givenSteps);
-        break;  
-      case 'r':
-        moveRight(givenSteps);
-        break;  
-      case 'b':
-        dropBead(COLOR0);
-        break; 
-    }
-    
-    Serial.println(input);
- }
+  drawImage(XImage);
+//  moveUp(-1000);
+// if(Serial.available()>0){
+//    String input = Serial.readStringUntil('\n');
+//    char firstChar = input.charAt(0);
+//    String restOfChar = input.substring(1);
+//    int givenSteps = restOfChar.toInt();
+//    
+//    switch(firstChar) {
+//      case 'u':
+//        moveUp(givenSteps);
+//        break; 
+//      case 'd':
+//        moveDown(givenSteps);
+//        break;  
+//      case 'l':
+//        moveLeft(givenSteps);
+//        break;  
+//      case 'r':
+//        moveRight(givenSteps);
+//        break;  
+//      case 'b':
+//        dropBead(COLOR0);
+//        break; 
+//    }
+//    
+//    Serial.println(input);
+// }
 }
