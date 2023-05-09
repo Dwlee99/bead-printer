@@ -31,7 +31,7 @@ const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
 
 
-const int right_steps = 10;
+const int right_steps = 30;
 
 int progress = 0;
 
@@ -162,7 +162,7 @@ void moveBoard(int r, int c, Color color) {
 void dropBead(Color toDrop) {
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
-    delay(50);
+    delay(30);
   }
 }
 
@@ -179,11 +179,18 @@ void updateProgress(int r, int c, Color color) {
   updateProgressBar();
   setPixel(r, c, color);
 }
-
+String colorStr(Color c) {
+  return (const char *[]) {
+    "COLOR0",
+    "COLOR1", 
+    "NONE",
+  }[c];
+}
 void drawImage(Color image[][n_cols]) {
   for(int r = 0; r < n_rows; r++) {
     for(int c = 0; c < n_cols; c++) {
       Color toDrop = image[r][c];
+      Serial.println(colorStr(toDrop));
       if (toDrop != NONE) {
         moveBoard(r, c, toDrop);
         dropBead(toDrop);
@@ -193,7 +200,7 @@ void drawImage(Color image[][n_cols]) {
   }
 }
 Color color0 = COLOR0;
-Color XImage[]={{COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+Color XImage[][n_cols]={{COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,COLOR0,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,COLOR0,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
@@ -208,7 +215,23 @@ Color XImage[]={{COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
-                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}} 
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}};
+Color LineImage[][n_cols]={{COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}};
 
 void setup() {
   // for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
@@ -230,8 +253,15 @@ void setup() {
 
 int counter = 0;
 
+boolean done = false;
 void loop() {
-  drawImage(XImage);
+  // moveLeft(500);
+  // moveRight(500);
+  // dropBead(COLOR0);
+  if(!done){
+    drawImage(LineImage);
+    done = true;
+  }
 //  moveUp(-1000);
 // if(Serial.available()>0){
 //    String input = Serial.readStringUntil('\n');
