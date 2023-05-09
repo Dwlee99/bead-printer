@@ -214,6 +214,7 @@ void setup() {
 int counter = 0;
 
 void loop() {
+  moveUp(-1000);
  if(Serial.available()>0){
     String input = Serial.readStringUntil('\n');
     char firstChar = input.charAt(0);
@@ -232,7 +233,10 @@ void loop() {
         break;  
       case 'r':
         moveRight(givenSteps);
-        break;   
+        break;  
+      case 'b':
+        dropBead(COLOR0);
+        break; 
     }
     
     Serial.println(input);
