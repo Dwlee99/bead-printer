@@ -31,7 +31,7 @@ const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
 
 
-const int right_steps = 27;
+const int right_steps = -27;
 
 int progress = 0;
 
@@ -84,7 +84,7 @@ void moveUp() {
 
 void moveUp(int amt) {
   // move y-axis stepper motor
-  cur_y--;
+//  cur_y--;
   steps(amt, y_motor_dir_pin, y_motor_step_pin);
 }
 
@@ -96,7 +96,7 @@ void moveDown() {
 
 void moveDown(int amt) {
   // move y-axis stepper motor
-  cur_y++;
+//  cur_y++;
   steps(-amt, y_motor_dir_pin, y_motor_step_pin);
 }
 
@@ -109,7 +109,7 @@ void moveRight() {
 
 void moveRight(int amt) {
   // move x-axis stepper motor
-  cur_x++;
+//  cur_x++;
   steps(amt, x_motor_dir_pin, x_motor_step_pin);
 }
 
@@ -121,7 +121,7 @@ void moveLeft() {
 
 void moveLeft(int amt) {
   // move x-axis stepper motor
-  cur_x--;
+//  cur_x--;
   steps(-amt, x_motor_dir_pin, x_motor_step_pin);
 }
 
@@ -169,7 +169,11 @@ void moveBoard(int r, int c, Color color) {
 void dropBead(Color toDrop) {
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
-    delay(50);
+    if(i<345){
+      delay(50);
+    } else {
+      delay(100);
+    }
   }
 }
 
@@ -261,6 +265,23 @@ Color LineImageVertical[][n_cols]={{COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NO
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}};
 
+Color FullBoard[][n_cols]={{COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
+                {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0}};
+
 void setup() {
   // for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
   //   servos[i].attach(servo_pins[i], min_servo, max_servo);
@@ -281,42 +302,52 @@ void setup() {
 
 int counter = 0;
 
+void backToHome() {
+  moveBoard(0,0,COLOR0);
+}
+
 boolean done = false;
 void loop() {
+//  homeToFirst();
   // moveLeft(500);
   // moveRight(500);
   // dropBead(COLOR0);
   if(!done){
     //moveDown(200);
-    drawImage(XImage);
+    drawImage(LineImageVertical);
     done = true;
+    Serial.println("done");
+    backToHome();
   }
 
 //  moveUp(-1000);
-// if(Serial.available()>0){
-//    String input = Serial.readStringUntil('\n');
-//    char firstChar = input.charAt(0);
-//    String restOfChar = input.substring(1);
-//    int givenSteps = restOfChar.toInt();
-//    
-//    switch(firstChar) {
-//      case 'u':
-//        moveUp(givenSteps);
-//        break; 
-//      case 'd':
-//        moveDown(givenSteps);
-//        break;  
-//      case 'l':
-//        moveLeft(givenSteps);
-//        break;  
-//      case 'r':
-//        moveRight(givenSteps);
-//        break;  
-//      case 'b':
-//        dropBead(COLOR0);
-//        break; 
-//    }
-//    
-//    Serial.println(input);
-// }
+ if(Serial.available()>0){
+    String input = Serial.readStringUntil('\n');
+    char firstChar = input.charAt(0);
+    String restOfChar = input.substring(1);
+    int givenSteps = restOfChar.toInt();
+    
+    switch(firstChar) {
+      case 'u':
+        moveUp(givenSteps);
+        break; 
+      case 'd':
+        moveDown(givenSteps);
+        break;  
+      case 'l':
+        moveLeft(givenSteps);
+        break;  
+      case 'r':
+        moveRight(givenSteps);
+        break;  
+      case 'b':
+        dropBead(COLOR0);
+        break; 
+      case 'n':
+        done = false;
+        break;
+    }
+    
+    Serial.println(input);
+ }
 }
