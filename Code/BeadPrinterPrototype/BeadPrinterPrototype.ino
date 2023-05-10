@@ -25,13 +25,13 @@ const int dropper_motor_step_pins[] = {15};
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
 
-const int up_steps = -50;
+const int up_steps = 27;
 
 const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
 
 
-const int right_steps = 30;
+const int right_steps = 27;
 
 int progress = 0;
 
@@ -79,6 +79,7 @@ void moveUp() {
   // move y-axis stepper motor
   cur_y--;
   steps(up_steps, y_motor_dir_pin, y_motor_step_pin);
+  Serial.println("moving");
 }
 
 void moveUp(int amt) {
@@ -139,30 +140,36 @@ void moveY(int amount) {
 }
 
 void moveX(int amount) {
+  Serial.print("amount in moveX: ");
+  Serial.println(amount);
   if (amount > 0) {
     for (int i = 0; i < amount; i++) {
       moveRight();
-      cur_x++;
     }
   }
   else {
     amount = -amount;
     for (int i = 0; i < amount; i++) {
       moveLeft();
-      cur_x--;
     }
   }
 }
 
 void moveBoard(int r, int c, Color color) {
-  moveY(r - cur_y + y_positions[color]);
-  moveX(c - cur_x + x_positions[color]);
+  int amountY = r - cur_y + y_positions[color];
+  int amountX = c - cur_x + x_positions[color];
+  Serial.print("amountX in moveBoard: ");
+  Serial.println(amountX);
+  moveY(amountY);
+  moveX(amountX);
+
+  delay(1000);
 }
 
 void dropBead(Color toDrop) {
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
-    delay(30);
+    delay(50);
   }
 }
 
@@ -190,17 +197,20 @@ void drawImage(Color image[][n_cols]) {
   for(int r = 0; r < n_rows; r++) {
     for(int c = 0; c < n_cols; c++) {
       Color toDrop = image[r][c];
-      Serial.println(colorStr(toDrop));
+      // Serial.println(colorStr(toDrop));
       if (toDrop != NONE) {
         moveBoard(r, c, toDrop);
         dropBead(toDrop);
+        // Serial.println(c);
+        delay(200);
         updateProgress(r, c, toDrop);
       } 
     }
   }
 }
 Color color0 = COLOR0;
-Color XImage[][n_cols]={{COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+Color XImage[][n_cols]={
+                {COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,COLOR0,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,COLOR0,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
@@ -216,11 +226,29 @@ Color XImage[][n_cols]={{COLOR0,NONE,NONE,NONE,COLOR0,NONE,NONE,NONE,NONE,NONE,N
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}};
+
 Color LineImage[][n_cols]={{COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE}};
+
+Color LineImageVertical[][n_cols]={{COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
+                {COLOR0,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
                 {NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE,NONE},
@@ -259,9 +287,11 @@ void loop() {
   // moveRight(500);
   // dropBead(COLOR0);
   if(!done){
-    drawImage(LineImage);
+    //moveDown(200);
+    drawImage(XImage);
     done = true;
   }
+
 //  moveUp(-1000);
 // if(Serial.available()>0){
 //    String input = Serial.readStringUntil('\n');
