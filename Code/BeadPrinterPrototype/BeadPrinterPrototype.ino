@@ -25,12 +25,12 @@ const int dropper_motor_step_pins[] = {15, 32};
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
 
-const int up_steps = 43;
+const int up_steps = 44;
 
 const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
 
-const int right_steps = -40;
+const int right_steps = -44;
 
 
 int progress = 0;
@@ -101,7 +101,12 @@ void moveDown(int amt) {
 void moveRight() {
   // move x-axis stepper motor
   cur_x++;
-  steps(right_steps, x_motor_dir_pin, x_motor_step_pin);
+  if (cur_y < 8) {
+    steps(right_steps, x_motor_dir_pin, x_motor_step_pin);
+  }
+  else {
+    steps(right_steps, x_motor_dir_pin, x_motor_step_pin);
+  }
 }
 
 
@@ -154,15 +159,20 @@ void moveX(int amount) {
 void moveBoard(int r, int c, Color color) {
   int amountY = r - cur_y + y_positions[color];
   int amountX = c - cur_x + x_positions[color];
-
-  moveY(amountY);
   moveX(amountX);
+  moveY(amountY);
+  
 }
 
 void dropBead(Color toDrop) {
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
-    delay(50);
+    if (i < 150) {
+      delay(50);
+    }
+    else {
+      delay(75);
+    }
   }
 }
 
@@ -276,10 +286,53 @@ Color Smiley[][n_cols] = {
   {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
   {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
   {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
+  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR0},
+  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR0},
+  {NONE, COLOR0, NONE, NONE, NONE, NONE, COLOR0, NONE},
+  {NONE, NONE, COLOR0, COLOR0, COLOR0, COLOR0, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE}
+};
+
+Color GreenSmiley[][n_cols] = {
+  {NONE, NONE, COLOR1, NONE, NONE, COLOR1, NONE, NONE},
+  {NONE, NONE, COLOR1, NONE, NONE, COLOR1, NONE, NONE},
+  {NONE, NONE, COLOR1, NONE, NONE, COLOR1, NONE, NONE},
   {COLOR1, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
   {COLOR1, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
   {NONE, COLOR1, NONE, NONE, NONE, NONE, COLOR1, NONE},
   {NONE, NONE, COLOR1, COLOR1, COLOR1, COLOR1, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE}
+};
+Color SmileyRotated[][n_cols] = {
+  {NONE, NONE, NONE, COLOR1, NONE, NONE, NONE, NONE},
+  {NONE, NONE, COLOR0, NONE, COLOR1, NONE, NONE, NONE},
+  {COLOR0, COLOR0, COLOR0, NONE, NONE, COLOR1, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, COLOR1, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, COLOR1, NONE},
+  {COLOR0, COLOR0, COLOR0, NONE, NONE, COLOR1, NONE, NONE},
+  {NONE, NONE, NONE, NONE, COLOR1, NONE, NONE, NONE},
+  {NONE, NONE, NONE, COLOR1, NONE, NONE, NONE, NONE}
+};
+
+Color XImageSmall[][n_cols] = {
+  {NONE, NONE, NONE, NONE, COLOR0, NONE, NONE, NONE},
+  {NONE, COLOR0, NONE, COLOR0, NONE, NONE, NONE, NONE},
+  {NONE, NONE, COLOR0, NONE, NONE, NONE, NONE, NONE},
+  {NONE, COLOR1, NONE, COLOR1, NONE, NONE, NONE, NONE},
+  {COLOR1, NONE, NONE, NONE, COLOR1, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE}
+};
+
+Color Lines[][n_cols] = {
+  {NONE, NONE, COLOR0, COLOR0, COLOR0, COLOR0, NONE, NONE},
+  {NONE, NONE, COLOR1, COLOR1, COLOR1, COLOR1, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
+  {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE},
   {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE}
 };
 
@@ -324,9 +377,11 @@ void loop() {
   // moveLeft(500);
   // moveRight(500);
   // dropBead(COLOR0);
+  
   if(Serial.available() > 0) {
     String input = Serial.readStringUntil('\n');
     drawImage(Smiley);
+    // moveBoard(8,8, COLOR1);
     // drawImage(LineImage);
     // drawImage(LineImageVertical);
     Serial.println("done");
