@@ -25,7 +25,7 @@ const int dropper_motor_step_pins[] = {15, 32};
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
 
-const int up_steps = 40;
+const int up_steps = 42;
 
 const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
@@ -162,13 +162,7 @@ void moveBoard(int r, int c, Color color) {
 void dropBead(Color toDrop) {
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
-    if(i < 160) {
-      delay(50);
-    }
-    else{
-      delay(150);
-    }
-    
+    delay(50);
   }
 }
 
@@ -279,15 +273,17 @@ void drawImage(Color image[][n_cols]) {
 //                 {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0}};
 // :)
 Color Smiley[][n_cols] = {
-  {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
-  {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
-  {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
-  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR0},
-  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR0},
-  {NONE, COLOR0, NONE, NONE, NONE, NONE, COLOR0, NONE},
-  {NONE, NONE, COLOR0, COLOR0, COLOR0, COLOR0, NONE, NONE},
+  {NONE, NONE, COLOR1, NONE, NONE, COLOR0, NONE, NONE},
+  {NONE, NONE, COLOR1, NONE, NONE, COLOR0, NONE, NONE},
+  {NONE, NONE, COLOR1, NONE, NONE, COLOR0, NONE, NONE},
+  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
+  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
+  {NONE, COLOR0, NONE, NONE, NONE, NONE, COLOR1, NONE},
+  {NONE, NONE, COLOR0, COLOR0, COLOR1, COLOR1, NONE, NONE},
   {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE}
 };
+
+Color Image[][n_cols] = {{NONE,NONE,NONE,NONE,NONE,COLOR0,COLOR1,COLOR1,},{NONE,NONE,NONE,NONE,NONE,COLOR1,COLOR1,COLOR1,},{NONE,NONE,NONE,NONE,NONE,COLOR1,NONE,NONE,},{NONE,NONE,COLOR1,COLOR0,COLOR0,COLOR1,NONE,COLOR1,},{COLOR1,COLOR1,COLOR0,COLOR0,COLOR1,COLOR1,NONE,NONE,},{COLOR0,COLOR0,COLOR0,COLOR0,COLOR1,NONE,NONE,NONE,},{COLOR0,COLOR0,COLOR0,COLOR0,COLOR1,NONE,NONE,NONE,},{COLOR0,COLOR0,COLOR0,COLOR1,COLOR1,COLOR0,COLOR1,COLOR1,},};
 
 void backToHome() {
   if (cur_x == cur_y && cur_x == 0) {

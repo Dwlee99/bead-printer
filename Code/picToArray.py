@@ -52,13 +52,19 @@ for x in range(8):
     for y in range(8):
         color = palette_image.getpixel((x, y))
         if color == 0:
-            pixel_art[x, y] = color1_name
+            pixel_art[x, y] = "COLOR0"
         elif color == 1:
-            pixel_art[x, y] = color2_name
+            pixel_art[x, y] = "COLOR1"
         else:
-            pixel_art[x, y] = None
+            pixel_art[x, y] = "NONE"
+
+array_str = "{"
 
 for i in range(8):
+    array_str += "{"
     for j in range(8):
-        # print(palette_image[i][j])
-        print(pixel_art[i][j])
+        array_str += pixel_art[i][j] + ","
+    array_str += "}" + ","
+array_str += "}"
+
+print(array_str)
