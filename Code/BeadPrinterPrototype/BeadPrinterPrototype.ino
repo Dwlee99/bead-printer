@@ -8,8 +8,8 @@ typedef enum Color {COLOR0, COLOR1, NONE} Color;
 int cur_x = 0;
 int cur_y = 0;
 
-const int x_positions[] = {0, 5};
-const int y_positions[] = {0, 0};
+const int x_positions[] = {0, 0};
+const int y_positions[] = {0, 12};
 
 // const int servo_pins[] = {13};
 // Servo servos[sizeof(servo_pins) / sizeof(servo_pins[0])];
@@ -25,13 +25,13 @@ const int dropper_motor_step_pins[] = {15};
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
 
-const int up_steps = 27;
+const int up_steps = 40;
 
 const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
 
 
-const int right_steps = -27;
+const int right_steps = -40;
 
 int progress = 0;
 
@@ -73,8 +73,6 @@ void steps(int number_of_steps, int direction_pin, int step_pin)
   }
 }
 
-
-
 void moveUp() {
   // move y-axis stepper motor
   cur_y--;
@@ -84,8 +82,7 @@ void moveUp() {
 
 void moveUp(int amt) {
   // move y-axis stepper motor
-//  cur_y--;
-  steps(amt, y_motor_dir_pin, y_motor_step_pin);
+  steps(up_steps * amt, y_motor_dir_pin, y_motor_step_pin);
 }
 
 void moveDown() {
@@ -96,8 +93,7 @@ void moveDown() {
 
 void moveDown(int amt) {
   // move y-axis stepper motor
-//  cur_y++;
-  steps(-amt, y_motor_dir_pin, y_motor_step_pin);
+  steps(-up_steps * amt, y_motor_dir_pin, y_motor_step_pin);
 }
 
 void moveRight() {
@@ -109,8 +105,7 @@ void moveRight() {
 
 void moveRight(int amt) {
   // move x-axis stepper motor
-//  cur_x++;
-  steps(amt, x_motor_dir_pin, x_motor_step_pin);
+  steps(right_steps * amt, x_motor_dir_pin, x_motor_step_pin);
 }
 
 void moveLeft() {
@@ -121,8 +116,7 @@ void moveLeft() {
 
 void moveLeft(int amt) {
   // move x-axis stepper motor
-//  cur_x--;
-  steps(-amt, x_motor_dir_pin, x_motor_step_pin);
+  steps(right_steps * -amt, x_motor_dir_pin, x_motor_step_pin);
 }
 
 void moveY(int amount) {
@@ -158,8 +152,7 @@ void moveX(int amount) {
 void moveBoard(int r, int c, Color color) {
   int amountY = r - cur_y + y_positions[color];
   int amountX = c - cur_x + x_positions[color];
-  Serial.print("amountX in moveBoard: ");
-  Serial.println(amountX);
+
   moveY(amountY);
   moveX(amountX);
 
@@ -169,12 +162,9 @@ void moveBoard(int r, int c, Color color) {
 void dropBead(Color toDrop) {
   for(int i = 0; i < STEPS_PER_TURN; i++) {
     step(true, dropper_motor_dir_pins[toDrop], dropper_motor_step_pins[toDrop]);
-    if(i<345){
-      delay(50);
-    } else {
-      delay(100);
-    }
+    delay(100);
   }
+  delay(1000);
 }
 
 void updateProgressBar() {
@@ -190,6 +180,7 @@ void updateProgress(int r, int c, Color color) {
   updateProgressBar();
   setPixel(r, c, color);
 }
+
 String colorStr(Color c) {
   return (const char *[]) {
     "COLOR0",
@@ -197,6 +188,7 @@ String colorStr(Color c) {
     "NONE",
   }[c];
 }
+
 void drawImage(Color image[][n_cols]) {
   for(int r = 0; r < n_rows; r++) {
     for(int c = 0; c < n_cols; c++) {
@@ -282,6 +274,17 @@ Color FullBoard[][n_cols]={{COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COL
                 {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0},
                 {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0}};
 
+
+void backToHome() {
+  if (cur_x == cur_y && cur_x == 0) {
+    moveUp(3);
+    moveLeft(3);
+  }
+  else {
+    moveBoard(0, 0, COLOR0);
+  }
+}
+
 void setup() {
   // for(int i = 0; i < sizeof(servo_pins) / sizeof(servo_pins[0]); i++) {
   //   servos[i].attach(servo_pins[i], min_servo, max_servo);
@@ -297,14 +300,13 @@ void setup() {
   pinMode(x_motor_dir_pin, OUTPUT);
   pinMode(x_motor_step_pin, OUTPUT);
   
+  backToHome();  
+
   Serial.begin(9600);
 }
 
 int counter = 0;
 
-void backToHome() {
-  moveBoard(0,0,COLOR0);
-}
 
 boolean done = false;
 void loop() {
@@ -312,42 +314,41 @@ void loop() {
   // moveLeft(500);
   // moveRight(500);
   // dropBead(COLOR0);
-  if(!done){
-    //moveDown(200);
-    drawImage(LineImageVertical);
-    done = true;
+  if(Serial.available() > 0) {
+    String input = Serial.readStringUntil('\n');
+    drawImage(XImage);
     Serial.println("done");
     backToHome();
   }
 
-//  moveUp(-1000);
- if(Serial.available()>0){
-    String input = Serial.readStringUntil('\n');
-    char firstChar = input.charAt(0);
-    String restOfChar = input.substring(1);
-    int givenSteps = restOfChar.toInt();
+// //  moveUp(-1000);
+//   if(Serial.available()>0){
+//     String input = Serial.readStringUntil('\n');
+//     char firstChar = input.charAt(0);
+//     String restOfChar = input.substring(1);
+//     int givenSteps = restOfChar.toInt();
     
-    switch(firstChar) {
-      case 'u':
-        moveUp(givenSteps);
-        break; 
-      case 'd':
-        moveDown(givenSteps);
-        break;  
-      case 'l':
-        moveLeft(givenSteps);
-        break;  
-      case 'r':
-        moveRight(givenSteps);
-        break;  
-      case 'b':
-        dropBead(COLOR0);
-        break; 
-      case 'n':
-        done = false;
-        break;
-    }
+//     switch(firstChar) {
+//       case 'u':
+//         moveUp(givenSteps);
+//         break; 
+//       case 'd':
+//         moveDown(givenSteps);
+//         break;  
+//       case 'l':
+//         moveLeft(givenSteps);
+//         break;  
+//       case 'r':
+//         moveRight(givenSteps);
+//         break;  
+//       case 'b':
+//         dropBead(COLOR0);
+//         break; 
+//       case 'n':
+//         done = false;
+//         break;
+//     }
     
-    Serial.println(input);
- }
+    // Serial.println(input);
+//  }
 }
