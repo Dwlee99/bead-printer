@@ -9,7 +9,7 @@ int cur_x = 0;
 int cur_y = 0;
 
 const int x_positions[] = {0, 0};
-const int y_positions[] = {0, 12};
+const int y_positions[] = {0, 9};
 
 // const int servo_pins[] = {13};
 // Servo servos[sizeof(servo_pins) / sizeof(servo_pins[0])];
@@ -25,7 +25,7 @@ const int dropper_motor_step_pins[] = {15, 32};
 const int y_motor_dir_pin = A0;
 const int y_motor_step_pin = A1;
 
-const int up_steps = 42;
+const int up_steps = 43;
 
 const int x_motor_dir_pin = 12;
 const int x_motor_step_pin = 27;
@@ -273,13 +273,13 @@ void drawImage(Color image[][n_cols]) {
 //                 {COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0,COLOR0}};
 // :)
 Color Smiley[][n_cols] = {
-  {NONE, NONE, COLOR1, NONE, NONE, COLOR0, NONE, NONE},
-  {NONE, NONE, COLOR1, NONE, NONE, COLOR0, NONE, NONE},
-  {NONE, NONE, COLOR1, NONE, NONE, COLOR0, NONE, NONE},
-  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
-  {COLOR0, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
-  {NONE, COLOR0, NONE, NONE, NONE, NONE, COLOR1, NONE},
-  {NONE, NONE, COLOR0, COLOR0, COLOR1, COLOR1, NONE, NONE},
+  {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
+  {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
+  {NONE, NONE, COLOR0, NONE, NONE, COLOR0, NONE, NONE},
+  {COLOR1, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
+  {COLOR1, NONE, NONE, NONE, NONE, NONE, NONE, COLOR1},
+  {NONE, COLOR1, NONE, NONE, NONE, NONE, COLOR1, NONE},
+  {NONE, NONE, COLOR1, COLOR1, COLOR1, COLOR1, NONE, NONE},
   {NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE}
 };
 
